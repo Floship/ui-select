@@ -244,7 +244,7 @@ uis.controller('uiSelectCtrl',
         if ( data !== undefined && data !== null ) {
           var filteredItems = data.filter(function(i) {
             return angular.isArray(selectedItems) ? selectedItems.every(function(selectedItem) {
-              return !angular.equals(i, selectedItem);
+              return true;
             }) : !angular.equals(i, selectedItems);
           });
           ctrl.setItemsFn(filteredItems);
@@ -333,6 +333,13 @@ uis.controller('uiSelectCtrl',
         ctrl.selected.filter(function (selection) { return angular.equals(selection, item); }).length > 0);
   };
 
+  ctrl.isItemSelected = function(itemScope) {
+    if (!ctrl.open) return;
+
+    var item = itemScope[ctrl.itemProperty];
+    return _isItemSelected(item);
+  };
+
   var disabledItems = [];
 
   function _updateItemDisabled(item, isDisabled) {
@@ -379,10 +386,14 @@ uis.controller('uiSelectCtrl',
 
   // When the user selects an item with ENTER or clicks the dropdown
   ctrl.select = function(item, skipFocusser, $event) {
+
+    if (_isItemSelected(item)) {
+      $scope.$broadcast('uis:deselect', item);
+    }
+
     if (isNil(item) || !_isItemDisabled(item)) {
 
       if ( ! ctrl.items && ! ctrl.search && ! ctrl.tagging.isActivated) return;
-
       if (!item || !_isItemDisabled(item)) {
         // if click is made on existing item, prevent from tagging, ctrl.search does not matter
         ctrl.clickTriggeredSelect = false;
