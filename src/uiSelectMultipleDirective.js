@@ -226,8 +226,6 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
         if(caretPosition > 0 || ($select.search.length && key == KEY.RIGHT)) return false;
 
-        $select.close();
-
         function getNewActiveMatchIndex(){
           switch(key){
             case KEY.LEFT:

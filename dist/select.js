@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.19.8 - 2021-10-12T17:01:48.361Z
+ * Version: 0.19.8 - 2021-12-19T17:52:36.970Z
  * License: MIT
  */
 
@@ -299,7 +299,7 @@ uis.controller('uiSelectCtrl',
   ctrl.spinnerEnabled = uiSelectConfig.spinnerEnabled;
   ctrl.spinnerClass = uiSelectConfig.spinnerClass;
   ctrl.removeSelected = uiSelectConfig.removeSelected; //If selected item(s) should be removed from dropdown list
-  ctrl.closeOnSelect = true; //Initialized inside uiSelect directive link function
+  ctrl.closeOnSelect = false; //Initialized inside uiSelect directive link function
   ctrl.skipFocusser = false; //Set to true to avoid returning focus to ctrl when item is selected
   ctrl.search = EMPTY_SEARCH;
 
@@ -713,14 +713,14 @@ uis.controller('uiSelectCtrl',
           }
           // search ctrl.selected for dupes potentially caused by tagging and return early if found
           if (_isItemSelected(item)) {
-            ctrl.close(skipFocusser);
             return;
           }
         }
-        _resetSearchInput();
+        
         $scope.$broadcast('uis:select', item);
 
-        if (ctrl.closeOnSelect) {
+        if (!ctrl.multiple || ctrl.items.length <= 1) {
+          _resetSearchInput();
           ctrl.close(skipFocusser);
         }
       }
@@ -1743,8 +1743,6 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
             newIndex = curr;
 
         if(caretPosition > 0 || ($select.search.length && key == KEY.RIGHT)) return false;
-
-        $select.close();
 
         function getNewActiveMatchIndex(){
           switch(key){
